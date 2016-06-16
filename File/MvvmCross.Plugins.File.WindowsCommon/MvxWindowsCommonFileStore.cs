@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -387,5 +388,31 @@ namespace MvvmCross.Plugins.File.WindowsCommon
             var localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
             return System.IO.Path.Combine(localFolderPath, path);
         }
+
+        public override ulong GetDiskFreeSpace(string DirectoryName)
+        {
+            ulong result = 0;
+
+            ulong lpFreeBytesAvailable;
+            ulong lpTotalNumberOfBytes;
+            ulong lpTotalNumberOfFreeBytes;
+
+            if (GetDiskFreeSpaceEx(DirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes))
+            {
+                result = lpFreeBytesAvailable;
+            }
+            else
+            {
+                MvxTrace.Trace($"Error during : System Error Code  : {Marshal.GetLastWin32Error()}");
+            }
+
+            return result;
+        }
+
+        [DllImport("api-ms-win-core-file-l1-2-0.dll", CharSet = CharSet.Unicode, EntryPoint = "GetDiskFreeSpaceExW", SetLastError = true)]
+        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+                                      out ulong lpFreeBytesAvailable,
+                                      out ulong lpTotalNumberOfBytes,
+                                      out ulong lpTotalNumberOfFreeBytes);
     }
 }

@@ -50,5 +50,7 @@ namespace MvvmCross.Plugins.File
         Stream OpenRead(string path);
 
         Stream OpenWrite(string path);
+
+        ulong GetDiskFreeSpace(string DirectoryName);
     }
 }

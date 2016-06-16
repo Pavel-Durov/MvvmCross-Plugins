@@ -24,6 +24,8 @@ namespace MvvmCross.Plugins.File
 
         #region IMvxFileStore Members
 
+        public abstract ulong GetDiskFreeSpace(string DirectoryName);
+
         public abstract Stream OpenRead(string path);
 
         public abstract Stream OpenWrite(string path);

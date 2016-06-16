@@ -355,5 +355,31 @@ namespace MvvmCross.Plugins.File.WindowsPhone
                 return false;
             }
         }
+
+        public override ulong GetDiskFreeSpace(string DirectoryName)
+        {
+            ulong result = 0;
+
+            ulong lpFreeBytesAvailable;
+            ulong lpTotalNumberOfBytes;
+            ulong lpTotalNumberOfFreeBytes;
+
+            if (GetDiskFreeSpaceEx(DirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes))
+            {
+                result = lpFreeBytesAvailable;
+            }
+            else
+            {
+                MvxTrace.Trace($"Error during : System Error Code  : {Marshal.GetLastWin32Error()}");
+            }
+
+            return result;
+        }
+
+        [DllImport("api-ms-win-core-file-l1-2-0.dll", CharSet = CharSet.Unicode, EntryPoint = "GetDiskFreeSpaceExW", SetLastError = true)]
+        private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+                                      out ulong lpFreeBytesAvailable,
+                                      out ulong lpTotalNumberOfBytes,
+                                      out ulong lpTotalNumberOfFreeBytes);
     }
 }

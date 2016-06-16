@@ -5,6 +5,7 @@
 //
 // Project Lead - Stuart Lodge, @slodge, me@slodge.com
 
+using Foundation;
 using System;
 using System.IO;
 
@@ -13,6 +14,22 @@ namespace MvvmCross.Plugins.File.iOS
     public class MvxIosFileStore : MvxIoFileStoreBase
     {
         public const string ResScheme = "res:";
+
+        public override ulong GetDiskFreeSpace(string DirectoryName)
+        {
+            NSError error;
+            NSFileManager mgr = new NSFileManager();
+            string[] filesArray = mgr.GetDirectoryContentRecursive(DirectoryName, out error);
+            ulong fileSize = 0;
+
+            foreach (var item in filesArray)
+            {
+                var file = mgr.GetFileSystemAttributes(item);
+                fileSize += file.Size;
+            }
+
+            return fileSize;
+        }
 
         protected override string FullPath(string path)
         {
