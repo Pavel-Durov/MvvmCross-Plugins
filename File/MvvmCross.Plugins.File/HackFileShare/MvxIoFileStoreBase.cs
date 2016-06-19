@@ -7,11 +7,13 @@
 
 // ReSharper disable all
 
+
 using MvvmCross.Platform.Exceptions;
 using MvvmCross.Platform.Platform;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace MvvmCross.Plugins.File
